@@ -40,9 +40,6 @@ private val showDetail = object : BroadcastReceiver(){
     override fun onReceive(p0: Context?, intent: Intent?) {
         if (intent!!.action!!.toString() == Interventions.KEY_ENABLE_HOME)
         {
-   //         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-   //         supportActionBar!!.setDisplayShowHomeEnabled(true)
-            //replace fragment
             val detailFragment = InterventionDetaille.getInstance()
             val num = intent.getStringExtra("nom")
             val bundle = Bundle()
@@ -72,23 +69,17 @@ var arr = arrayListOf<String>()
             ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE),
                     1)
         }
-
-
         setSupportActionBar(toolbar)
-
-
-
         fab.setOnClickListener { view ->
             loadFrag2(AjouterForm())
             images!!.clear()
         }
 
         //////////////////////////////////////////////////////////////
-        toolbar.setTitle("Annonces plombiers")
+        toolbar.setTitle("Interventions plombiers")
         setSupportActionBar(toolbar)
         loadFrag1(ll!!)
-     //   Annonces.initial()
-        intial_file_json()
+     //   intial_file_json()
         read_file_json()
 
 /////////////////////////////////////////////////////////
@@ -99,13 +90,8 @@ if(btn_date !=null) {
     }
 }
 
-        ////////////////////////////////////////////////////
-
-
         LocalBroadcastManager.getInstance(this)
                 .registerReceiver(showDetail, IntentFilter(Interventions.KEY_ENABLE_HOME))
-
-        ////////////////////////////////////////////////////////
 
         val toggle = ActionBarDrawerToggle(
                 this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
@@ -220,10 +206,7 @@ if(btn_date !=null) {
                 ll!!.search_bar.lastSuggestions = ll!!.last_suggest
                 ll!!.search_bar.setHint("Entrer Nom")
             }
-
-
         }
-
         drawer_layout.closeDrawer(GravityCompat.START)
         return true
     }
@@ -241,19 +224,13 @@ if(btn_date !=null) {
         loadFrag2(AjouterForm())
         images!!.clear()
     }
-
     private fun loadFrag1(f1:ListIntervention){
-
         val ft = manager.beginTransaction()
         ft.replace(R.id.fragment,f1)
-
-
         ft.addToBackStack(null)
         ft.commit()
     }
-
     private fun loadFrag2(f2:AjouterForm){
-
         val ft = manager.beginTransaction()
         ft.replace(R.id.fragment,f2)
         ft.addToBackStack(null)
@@ -275,26 +252,15 @@ if(btn_date !=null) {
             var formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
             val d = mDay.toString()+"-"+mMonth.toString()+"-"+mYear.toString()
             var date = LocalDate.of(mYear,mMonth, mDay)
-
-
             datee.text =date.toString()
-
         }, year, month, day)
         dpd.show()
-
         datee.text =date.toString()
     }
-
-
     fun ajouter(view: View){
         val nom: EditText =findViewById(R.id.input_nom)
         val type: EditText =findViewById(R.id.input_type)
         val date: TextView =findViewById(R.id.datee)
-
-
-
-
-
         val t =  System.currentTimeMillis();
         Log.i("TAG", "SERIAL: " + t);
         var a1 = Intervention(Interventions.nb_intervention!! + 1,nom.text.toString(),type.text.toString(),datee.text.toString())
@@ -305,5 +271,4 @@ if(btn_date !=null) {
       //  date.setText("")
         write_file_json()
     }
-
 }

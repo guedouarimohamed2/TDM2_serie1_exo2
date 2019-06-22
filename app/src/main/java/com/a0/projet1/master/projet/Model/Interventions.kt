@@ -25,7 +25,7 @@ object Interventions {
 
     fun initial(){
 
-        this.nb_intervention = 15
+       // this.nb_intervention = 15
     }
     fun add_annonce(Intervention: Intervention){
         ans.add(Intervention)
