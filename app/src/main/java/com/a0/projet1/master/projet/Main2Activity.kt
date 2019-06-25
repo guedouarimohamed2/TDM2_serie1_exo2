@@ -79,8 +79,8 @@ var arr = arrayListOf<String>()
         toolbar.setTitle("Interventions plombiers")
         setSupportActionBar(toolbar)
         loadFrag1(ll!!)
-     //   intial_file_json()
-        read_file_json()
+        intial_file_json()
+    //    read_file_json()
 
 /////////////////////////////////////////////////////////
 
@@ -120,38 +120,71 @@ if(btn_date !=null) {
 
 
     fun intial_file_json(){
-        var jsn = JSONArray()
-        for(a in Interventions.ans){
-            jsn.put(JSONObject().put("num",a.num).put("nom",a.nom).put("type",a.type).put("date",a.date_depot))
-        }
-        jsn.put(JSONObject().put("num","1").put("nom","mohamed").put("type","type2").put("date","2019-06-25"))
-        jsn.put(JSONObject().put("num","2").put("nom","hamid").put("type","type3").put("date","2019-07-05"))
-        jsn.put(JSONObject().put("num","3").put("nom","sofiane").put("type","type4").put("date","2019-06-29"))
-        jsn.put(JSONObject().put("num","4").put("nom","yacine").put("type","type2").put("date","2019-09-15"))
-        jsn.put(JSONObject().put("num","5").put("nom","mokranr").put("type","type5").put("date","2019-08-12"))
-        jsn.put(JSONObject().put("num","6").put("nom","kadour").put("type","type2").put("date","2019-07-21"))
 
-        var output:Writer
-        var fileName = "file"
-        val storageDir = getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)
-        if(!storageDir.exists()){
-            storageDir.mkdir()
+        read_file_json()
+        if(Interventions.ans.isEmpty()) {
+
+
+            var jsn = JSONArray()
+            for (a in Interventions.ans) {
+                jsn.put(JSONObject().put("num", a.num).put("nom", a.nom).put("type", a.type).put("date", a.date_depot))
+            }
+            jsn.put(JSONObject().put("num", "1").put("nom", "mohamed").put("type", "type2").put("date", "2019-06-25"))
+            jsn.put(JSONObject().put("num", "2").put("nom", "hamid").put("type", "type3").put("date", "2019-07-05"))
+            jsn.put(JSONObject().put("num", "3").put("nom", "sofiane").put("type", "type4").put("date", "2019-06-29"))
+            jsn.put(JSONObject().put("num", "4").put("nom", "yacine").put("type", "type2").put("date", "2019-09-15"))
+            jsn.put(JSONObject().put("num", "5").put("nom", "mokranr").put("type", "type5").put("date", "2019-08-12"))
+            jsn.put(JSONObject().put("num", "6").put("nom", "kadour").put("type", "type2").put("date", "2019-07-21"))
+
+            var output: Writer
+            var fileName = "file"
+            val storageDir = getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)
+            if (!storageDir.exists()) {
+                storageDir.mkdir()
+            }
+            var file = File(getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), "file.json")
+            output = BufferedWriter(FileWriter(file))
+            output.write(jsn.toString())
+            output.close()
         }
-        var file = File(getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS),"file.json")
-        output = BufferedWriter(FileWriter(file))
-        output.write(jsn.toString())
-        output.close()
     }
 
     fun read_file_json(){
-        val stream = FileInputStream(getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS).toString()+"/file.json")
-        val Text = stream.bufferedReader().use(BufferedReader::readText)
-        var jsonarr = JSONArray(Text)
-        for(i in 0..jsonarr.length()-1){
-            var jsonobj = jsonarr.getJSONObject(i)
-            var a:Intervention=Intervention(jsonobj.getString("num").toInt(),jsonobj.getString("nom").toString(), jsonobj.getString("type").toString(),jsonobj.getString("date").toString())
-            Interventions.add_annonce(a)
+        try{
+            val stream = FileInputStream(getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS).toString()+"/file.json")
+            val Text = stream.bufferedReader().use(BufferedReader::readText)
+            var jsonarr = JSONArray(Text)
+            for(i in 0..jsonarr.length()-1){
+                var jsonobj = jsonarr.getJSONObject(i)
+                var a:Intervention=Intervention(jsonobj.getString("num").toInt(),jsonobj.getString("nom").toString(), jsonobj.getString("type").toString(),jsonobj.getString("date").toString())
+                Interventions.add_annonce(a)
+            }
+        }catch (e : IOException){
+            var output:Writer
+            var fileName = "file"
+            val storageDir = getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)
+            if(!storageDir.exists()){
+                storageDir.mkdir()
+            }
+            var file = File(getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS),"file.json")
+            output = BufferedWriter(FileWriter(file)as Writer)
+            output.write("[]")
+            output.close()
+
+            val stream = FileInputStream(getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS).toString()+"/file.json")
+            val Text = stream.bufferedReader().use(BufferedReader::readText)
+            var jsonarr = JSONArray(Text)
+            if(jsonarr.length()!=0){
+                for(i in 0..jsonarr.length()-1){
+                    var jsonobj = jsonarr.getJSONObject(i)
+                    var a:Intervention=Intervention(jsonobj.getString("num").toInt(),jsonobj.getString("nom").toString(), jsonobj.getString("type").toString(),jsonobj.getString("date").toString())
+                    Interventions.add_annonce(a)
+                }
+            }
+
         }
+
+
     }
     override fun onBackPressed() {
         if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
