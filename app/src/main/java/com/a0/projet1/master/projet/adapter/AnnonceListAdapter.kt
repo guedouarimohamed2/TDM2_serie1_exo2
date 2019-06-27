@@ -3,8 +3,8 @@ package com.a0.projet1.master.projet.adapter
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.support.v4.content.LocalBroadcastManager
-import android.support.v7.widget.RecyclerView
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.recyclerview.widget.RecyclerView
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -66,7 +66,7 @@ class AnnonceListAdapter(internal var context: Context,
 
     }
 
-    inner class MyViewHolder(itemView: View):RecyclerView.ViewHolder(itemView){
+    inner class MyViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
         internal var text_wilaya: TextView
         internal var text_type: TextView
         internal var text_nom: TextView

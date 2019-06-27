@@ -6,7 +6,7 @@ import android.content.ContextWrapper
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
-import android.support.v4.content.ContextCompat
+import androidx.core.content.ContextCompat
 import android.widget.Toast
 import com.a0.projet1.master.projet.R
 import com.google.gson.Gson

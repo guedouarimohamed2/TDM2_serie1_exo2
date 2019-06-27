@@ -1,9 +1,9 @@
 package com.a0.projet1.master.projet
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
@@ -27,7 +27,7 @@ import kotlinx.android.synthetic.main.fragment_list_annonce.*
  */
 class ListIntervention : Fragment() {
 
-    internal lateinit var recycler_view:RecyclerView
+    internal lateinit var recycler_view: RecyclerView
     internal  lateinit var adapter:AnnonceListAdapter
 
     internal  lateinit var search_adapter:AnnonceListAdapter
@@ -45,7 +45,7 @@ class ListIntervention : Fragment() {
         recycler_view = itemView.findViewById(R.id.annonce_recyclerview) as RecyclerView
         recycler_view.setHasFixedSize(true)
 
-        recycler_view.layoutManager = GridLayoutManager(activity,1)
+        recycler_view.layoutManager = GridLayoutManager(activity, 1)
         val itemDecoration = ItemOffsetDecoration(activity!!,R.dimen.spacing)
         recycler_view.addItemDecoration(itemDecoration)
 
