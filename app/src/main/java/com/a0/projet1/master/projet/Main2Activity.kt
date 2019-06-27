@@ -40,9 +40,6 @@ private val showDetail = object : BroadcastReceiver(){
     override fun onReceive(p0: Context?, intent: Intent?) {
         if (intent!!.action!!.toString() == Interventions.KEY_ENABLE_HOME)
         {
-   //         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-   //         supportActionBar!!.setDisplayShowHomeEnabled(true)
-            //replace fragment
             val detailFragment = InterventionDetaille.getInstance()
             val num = intent.getStringExtra("nom")
             val bundle = Bundle()
@@ -72,24 +69,18 @@ var arr = arrayListOf<String>()
             ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE),
                     1)
         }
-
-
         setSupportActionBar(toolbar)
-
-
-
         fab.setOnClickListener { view ->
             loadFrag2(AjouterForm())
             images!!.clear()
         }
 
         //////////////////////////////////////////////////////////////
-        toolbar.setTitle("Annonces plombiers")
+        toolbar.setTitle("Interventions plombiers")
         setSupportActionBar(toolbar)
         loadFrag1(ll!!)
-     //   Annonces.initial()
         intial_file_json()
-        read_file_json()
+    //    read_file_json()
 
 /////////////////////////////////////////////////////////
 
@@ -99,13 +90,8 @@ if(btn_date !=null) {
     }
 }
 
-        ////////////////////////////////////////////////////
-
-
         LocalBroadcastManager.getInstance(this)
                 .registerReceiver(showDetail, IntentFilter(Interventions.KEY_ENABLE_HOME))
-
-        ////////////////////////////////////////////////////////
 
         val toggle = ActionBarDrawerToggle(
                 this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
@@ -134,38 +120,71 @@ if(btn_date !=null) {
 
 
     fun intial_file_json(){
-        var jsn = JSONArray()
-        for(a in Interventions.ans){
-            jsn.put(JSONObject().put("num",a.num).put("nom",a.nom).put("type",a.type).put("date",a.date_depot))
-        }
-        jsn.put(JSONObject().put("num","1").put("nom","mohamed").put("type","type2").put("date","2019-06-25"))
-        jsn.put(JSONObject().put("num","2").put("nom","hamid").put("type","type3").put("date","2019-07-05"))
-        jsn.put(JSONObject().put("num","3").put("nom","sofiane").put("type","type4").put("date","2019-06-29"))
-        jsn.put(JSONObject().put("num","4").put("nom","yacine").put("type","type2").put("date","2019-09-15"))
-        jsn.put(JSONObject().put("num","5").put("nom","mokranr").put("type","type5").put("date","2019-08-12"))
-        jsn.put(JSONObject().put("num","6").put("nom","kadour").put("type","type2").put("date","2019-07-21"))
 
-        var output:Writer
-        var fileName = "file"
-        val storageDir = getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)
-        if(!storageDir.exists()){
-            storageDir.mkdir()
+        read_file_json()
+        if(Interventions.ans.isEmpty()) {
+
+
+            var jsn = JSONArray()
+            for (a in Interventions.ans) {
+                jsn.put(JSONObject().put("num", a.num).put("nom", a.nom).put("type", a.type).put("date", a.date_depot))
+            }
+            jsn.put(JSONObject().put("num", "1").put("nom", "mohamed").put("type", "type2").put("date", "2019-06-25"))
+            jsn.put(JSONObject().put("num", "2").put("nom", "hamid").put("type", "type3").put("date", "2019-07-05"))
+            jsn.put(JSONObject().put("num", "3").put("nom", "sofiane").put("type", "type4").put("date", "2019-06-29"))
+            jsn.put(JSONObject().put("num", "4").put("nom", "yacine").put("type", "type2").put("date", "2019-09-15"))
+            jsn.put(JSONObject().put("num", "5").put("nom", "mokranr").put("type", "type5").put("date", "2019-08-12"))
+            jsn.put(JSONObject().put("num", "6").put("nom", "kadour").put("type", "type2").put("date", "2019-07-21"))
+
+            var output: Writer
+            var fileName = "file"
+            val storageDir = getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)
+            if (!storageDir.exists()) {
+                storageDir.mkdir()
+            }
+            var file = File(getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), "file.json")
+            output = BufferedWriter(FileWriter(file))
+            output.write(jsn.toString())
+            output.close()
         }
-        var file = File(getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS),"file.json")
-        output = BufferedWriter(FileWriter(file))
-        output.write(jsn.toString())
-        output.close()
     }
 
     fun read_file_json(){
-        val stream = FileInputStream(getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS).toString()+"/file.json")
-        val Text = stream.bufferedReader().use(BufferedReader::readText)
-        var jsonarr = JSONArray(Text)
-        for(i in 0..jsonarr.length()-1){
-            var jsonobj = jsonarr.getJSONObject(i)
-            var a:Intervention=Intervention(jsonobj.getString("num").toInt(),jsonobj.getString("nom").toString(), jsonobj.getString("type").toString(),jsonobj.getString("date").toString())
-            Interventions.add_annonce(a)
+        try{
+            val stream = FileInputStream(getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS).toString()+"/file.json")
+            val Text = stream.bufferedReader().use(BufferedReader::readText)
+            var jsonarr = JSONArray(Text)
+            for(i in 0..jsonarr.length()-1){
+                var jsonobj = jsonarr.getJSONObject(i)
+                var a:Intervention=Intervention(jsonobj.getString("num").toInt(),jsonobj.getString("nom").toString(), jsonobj.getString("type").toString(),jsonobj.getString("date").toString())
+                Interventions.add_annonce(a)
+            }
+        }catch (e : IOException){
+            var output:Writer
+            var fileName = "file"
+            val storageDir = getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)
+            if(!storageDir.exists()){
+                storageDir.mkdir()
+            }
+            var file = File(getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS),"file.json")
+            output = BufferedWriter(FileWriter(file)as Writer)
+            output.write("[]")
+            output.close()
+
+            val stream = FileInputStream(getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS).toString()+"/file.json")
+            val Text = stream.bufferedReader().use(BufferedReader::readText)
+            var jsonarr = JSONArray(Text)
+            if(jsonarr.length()!=0){
+                for(i in 0..jsonarr.length()-1){
+                    var jsonobj = jsonarr.getJSONObject(i)
+                    var a:Intervention=Intervention(jsonobj.getString("num").toInt(),jsonobj.getString("nom").toString(), jsonobj.getString("type").toString(),jsonobj.getString("date").toString())
+                    Interventions.add_annonce(a)
+                }
+            }
+
         }
+
+
     }
     override fun onBackPressed() {
         if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
@@ -220,10 +239,7 @@ if(btn_date !=null) {
                 ll!!.search_bar.lastSuggestions = ll!!.last_suggest
                 ll!!.search_bar.setHint("Entrer Nom")
             }
-
-
         }
-
         drawer_layout.closeDrawer(GravityCompat.START)
         return true
     }
@@ -241,19 +257,13 @@ if(btn_date !=null) {
         loadFrag2(AjouterForm())
         images!!.clear()
     }
-
     private fun loadFrag1(f1:ListIntervention){
-
         val ft = manager.beginTransaction()
         ft.replace(R.id.fragment,f1)
-
-
         ft.addToBackStack(null)
         ft.commit()
     }
-
     private fun loadFrag2(f2:AjouterForm){
-
         val ft = manager.beginTransaction()
         ft.replace(R.id.fragment,f2)
         ft.addToBackStack(null)
@@ -275,26 +285,15 @@ if(btn_date !=null) {
             var formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
             val d = mDay.toString()+"-"+mMonth.toString()+"-"+mYear.toString()
             var date = LocalDate.of(mYear,mMonth, mDay)
-
-
             datee.text =date.toString()
-
         }, year, month, day)
         dpd.show()
-
         datee.text =date.toString()
     }
-
-
     fun ajouter(view: View){
         val nom: EditText =findViewById(R.id.input_nom)
         val type: EditText =findViewById(R.id.input_type)
         val date: TextView =findViewById(R.id.datee)
-
-
-
-
-
         val t =  System.currentTimeMillis();
         Log.i("TAG", "SERIAL: " + t);
         var a1 = Intervention(Interventions.nb_intervention!! + 1,nom.text.toString(),type.text.toString(),datee.text.toString())
@@ -305,5 +304,4 @@ if(btn_date !=null) {
       //  date.setText("")
         write_file_json()
     }
-
 }
